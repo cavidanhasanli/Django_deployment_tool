@@ -1,8 +1,8 @@
 #!/bin/bash
 # Author Cavidan Hasanli Django developer
-VERSION="1.5"
+VERSION="1.0"
 ERROR_STATUS=0
-CONF_ROOT=/root/django_deployment_tool
+CONF_ROOT=/root/Django_deployment_tool
 POSTGRESQL_USER=postgres
 # POSTGRESQL_CLUSTER_VERSION="$(sudo pg_lsclusters | egrep -o '[0-9]{1,}\.[0-9]{1,}' | (read a; echo $a;))" # $(pg_config --version | egrep -o '[0-9]{1,}\.[0-9]{1,}')
 POSTGRESQL_UPGRADE_TO=9.5
