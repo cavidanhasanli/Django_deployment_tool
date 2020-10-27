@@ -1,0 +1,95 @@
+#!/bin/bash
+
+APP_USER_LINUX=#{APP_USER_LINUX}
+bold=$(tput bold)
+normal=$(tput sgr0)
+
+sudo su - $APP_USER_LINUX << \EOF
+    CONF_ROOT=/var/local
+    source $CONF_ROOT/config.txt
+    source $CONF_ROOT/status.txt
+    if [ $REPO_CLONE ]; then
+        echo "Repository check ...."
+        sleep 3
+        echo "\e[32mAlready have $GIT_REPO_URL ............... [OK]\e[0m"
+    else
+        echo -e "Clonig git repository from this url:  $GIT_REPO_URL"
+        cd /home/$APP_USER
+        git clone $GIT_REPO_URL
+        echo "REPO_CLONE=True" >> $CONF_ROOT/status.txt
+    fi
+    cd $GIT_ROOT
+    if [ $ROOT_DIRECTOR ]; then
+        echo "Check project root directory"
+    else
+        APP_ROOT_DIRECTOR=$(pwd)
+        echo "APP_ROOT_DIRECTOR=$APP_ROOT_DIRECTOR" >> "$CONF_ROOT/config.txt"
+        echo "ROOT_DIRECTOR=True" >> $CONF_ROOT/status.txt
+    fi
+    cd $APP_ROOT_DIRECTOR
+    if [ ! -f "manage.py" ]; then
+        echo -e "\e[31mERROR : manage.py file doest exist the system\e[0m"
+        echo -e "\e[34mPlease make sure your django application modern root directory look like:"
+        echo -e "|-- base_app_name"
+        echo -e "|   |-- __init__.py"
+        echo -e "|   |-- settings.py"
+        echo -e "|   |-- urls.py"
+        echo -e "|   +-- wsgi.py"
+        echo -e "|-- app_name"
+        echo -e "|   |-- admin.py"
+        echo -e "|   |-- apps.py"
+        echo -e "|   |-- __init__.py"
+        echo -e "|   |-- models.py"
+        echo -e "|   |-- views.py"
+        echo -e "|   +-- tests.py"
+        echo -e "|-- ${bold}manage.py${normal}"
+        echo -e "|-- ${bold}requirements.txt${normal}\e[0m"
+        touch /home/$APP_USER/error.log
+        echo "ERROR : manage.py file doest exist the system" >> /home/$APP_USER/error.log
+        exit 123
+    else
+        sudo rm -rf /home/$APP_USER/error.log
+    fi
+    if [ ! -f "requirements.txt" ]; then
+        echo -e "\e[31mERROR : requirements.txt file doest exist the system\e[0m"
+        echo -e "\e[34mPlease make sure your django application have requirements.txt if not:"
+        echo -e "Add application requirements files your project"
+        echo -e "pip install gunicorn"
+        echo -e "pip freeze > ${bold}requirements.txt${normal}"
+        touch /home/$APP_USER/error.log
+        echo "ERROR : requirements.txt file doest exist the system" >> /home/$APP_USER/error.log
+        exit 123
+    else
+        rm -rf /home/$APP_USER/error.log
+    fi
+    echo -e "Create Virtualenviroment"
+    python3 -m venv .venv
+    echo -e "Activate virtualenviroment"
+    source .venv/bin/activate
+    pip install -r requirements.txt
+    pip install -U pip
+    python manage.py check
+    python manage.py makemigrations
+    python manage.py migrate
+    echo -e "Configuration Nginx credentials.."
+    sed -i -e 's|#{APP_SERVER}|'$APP_SERVER'|g' -e 's|#{APP_ROOT_DIRECTOR}|'$APP_ROOT_DIRECTOR'|g' -e 's|#{APP_NAME}|'$APP_NAME'|g' $CONF_ROOT/tlp/default
+    echo -e "Create nginx default server.."
+    sudo cp -r $CONF_ROOT/tlp/default /etc/nginx/sites-available/default
+    echo -e "Gunicorn file created.."
+    sed -i -e 's|#{APP_USER}|'$APP_USER'|g' -e 's|#{APP_ROOT_DIRECTOR}|'$APP_ROOT_DIRECTOR'|g' -e 's|#{APP_NAME}|'$APP_NAME'|g' $CONF_ROOT/tlp/gunicorn.service
+    sudo cp -r $CONF_ROOT/tlp/gunicorn.service /etc/systemd/system/
+    echo -e "Everything works cool :)"
+    sudo cp -r $CONF_ROOT/commands/restart /bin/
+    sudo chmod +x /bin/restart
+    sudo cp -r $CONF_ROOT/commands/makemigrations /bin/
+    sudo chmod +x /bin/makemigrations
+    sudo cp -r $CONF_ROOT/commands/shell /bin/
+    sudo chmod +x /bin/shell
+    sudo cp -r $CONF_ROOT/commands/check /bin/
+    sudo chmod +x /bin/check
+    sudo cp -r $CONF_ROOT/commands/install_redis /bin/
+    sudo chmod +x /bin/install_redis
+    sudo systemctl start nginx
+    sudo systemctl start gunicorn
+    restart
+EOF
