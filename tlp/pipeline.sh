@@ -17,7 +17,7 @@ sudo su - #{APP_USER} << EOF
     check
     echo -e "Everything works fine :)"
 EOF
-
+sudo systemctl daemon-reload
 systemctl restart nginx
 echo "Restarting nginx:                                                    [OK]"
 systemctl restart gunicorn
