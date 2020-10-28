@@ -33,6 +33,7 @@ function deployment_status() {
     . $CONF_ROOT/config.txt
     if [[ $APP_USER && $DEPLOYMENT_STATUS ]]; then
         echo -e "Current deploy status:"
+        echo -e "Current deploy status:"
         echo -e "\n"
         echo -e "\nDjango\t\t\t\t\tAlready Deploy"
         echo -e "\n"
@@ -84,7 +85,8 @@ function get_user_credential {
         echo -e "\e[32mLinux User step ......................... [OK]\e[0m"
     else
         echo -e "Creating new User for $(uname -a)"
-        echo "APP_SERVER=$(curl -4 https://icanhazip.com/)" >> "$CONF_ROOT/config.txt"
+
+        echo "APP_SERVER=192.168.88.136" >> "$CONF_ROOT/config.txt"
         echo -e "Please write New Linux User name and password"
         read -p "Please enter your linux username: " APP_USER
         while true ; do
