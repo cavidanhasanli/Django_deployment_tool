@@ -237,7 +237,7 @@ function configuration_server() {
     sudo systemctl start gunicorn
     sudo systemctl enable gunicorn
     echo -e "Everything works cool :)"
-
+    sudo systemctl daemon-reload
 }
 
 
