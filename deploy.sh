@@ -229,12 +229,15 @@ function configuration_server() {
     echo -e "Configuration Nginx credentials.."
     sed -i -e 's|#{APP_SERVER}|'$APP_SERVER'|g' -e 's|#{APP_ROOT_DIRECTORY}|'$APP_ROOT_DIRECTORY'|g' -e 's|#{APP_NAME}|'$APP_NAME'|g' $CONF_ROOT/tlp/default
     echo -e "Create nginx default server.."
-    cp -r tlp/default /etc/nginx/sites-available/default
-    cp -r tlp/default /etc/nginx/sites-enabled/default
+    cp -r tlp/default /etc/nginx/sites-available/
+    cp -r tlp/default /etc/nginx/sites-enabled/
     echo -e "Gunicorn file created.."
     sed -i -e 's|#{APP_USER}|'$APP_USER'|g' -e 's|#{APP_ROOT_DIRECTORY}|'$APP_ROOT_DIRECTORY'|g' -e 's|#{APP_NAME}|'$APP_NAME'|g' $CONF_ROOT/tlp/gunicorn.service
     cp -r tlp/gunicorn.service /etc/systemd/system/
+    sudo systemctl start gunicorn
+    sudo systemctl enable gunicorn
     echo -e "Everything works cool :)"
+
 }
 
 

@@ -21,6 +21,8 @@ sudo systemctl daemon-reload
 systemctl restart nginx
 echo "Restarting nginx:                                                    [OK]"
 systemctl restart gunicorn
+sudo ufw delete allow 8000
+sudo ufw allow 'Nginx Full'
 echo "Restarting Gunicorn:                                                 [OK]"
 echo "Everything is OK :)"
 
