@@ -473,6 +473,7 @@ case ${COMMAND} in
         get_user_credential
         fix_perl_locale_error
         create_new_linux_user
+        configuration_server
         get_project_details
         done_script
     ;;
