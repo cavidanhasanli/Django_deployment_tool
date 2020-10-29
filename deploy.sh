@@ -2,7 +2,7 @@
 # Author Cavidan Hasanli Django developer
 VERSION="1.0"
 ERROR_STATUS=0
-CONF_ROOT=/root/Django_deployment_tool
+CONF_ROOT=/root/django_deployment_tool
 POSTGRESQL_USER=postgres
 # POSTGRESQL_CLUSTER_VERSION="$(sudo pg_lsclusters | egrep -o '[0-9]{1,}\.[0-9]{1,}' | (read a; echo $a;))" # $(pg_config --version | egrep -o '[0-9]{1,}\.[0-9]{1,}')
 POSTGRESQL_UPGRADE_TO=9.5
@@ -32,7 +32,6 @@ function usage {
 function deployment_status() {
     . $CONF_ROOT/config.txt
     if [[ $APP_USER && $DEPLOYMENT_STATUS ]]; then
-        echo -e "Current deploy status:"
         echo -e "Current deploy status:"
         echo -e "\n"
         echo -e "\nDjango\t\t\t\t\tAlready Deploy"
@@ -85,7 +84,6 @@ function get_user_credential {
         echo -e "\e[32mLinux User step ......................... [OK]\e[0m"
     else
         echo -e "Creating new User for $(uname -a)"
-
         echo "APP_SERVER=192.168.88.136" >> "$CONF_ROOT/config.txt"
         echo -e "Please write New Linux User name and password"
         read -p "Please enter your linux username: " APP_USER
@@ -229,15 +227,11 @@ function configuration_server() {
     echo -e "Configuration Nginx credentials.."
     sed -i -e 's|#{APP_SERVER}|'$APP_SERVER'|g' -e 's|#{APP_ROOT_DIRECTORY}|'$APP_ROOT_DIRECTORY'|g' -e 's|#{APP_NAME}|'$APP_NAME'|g' $CONF_ROOT/tlp/default
     echo -e "Create nginx default server.."
-    cp -r tlp/default /etc/nginx/sites-available/
-#    cp -r /etc/nginx/sites-available/default /etc/nginx/sites-enabled/
+    cp -r tlp/default /etc/nginx/sites-available/default
     echo -e "Gunicorn file created.."
     sed -i -e 's|#{APP_USER}|'$APP_USER'|g' -e 's|#{APP_ROOT_DIRECTORY}|'$APP_ROOT_DIRECTORY'|g' -e 's|#{APP_NAME}|'$APP_NAME'|g' $CONF_ROOT/tlp/gunicorn.service
     cp -r tlp/gunicorn.service /etc/systemd/system/
-    sudo systemctl start gunicorn
-    sudo systemctl enable gunicorn
     echo -e "Everything works cool :)"
-    sudo systemctl daemon-reload
 }
 
 
@@ -476,7 +470,6 @@ case ${COMMAND} in
         get_user_credential
         fix_perl_locale_error
         create_new_linux_user
-        configuration_server
         get_project_details
         done_script
     ;;
