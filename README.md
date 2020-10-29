@@ -12,7 +12,8 @@ PS:This program must also be used root.
 $ https://github.com/cavidanhasanli/Django_deployment_tool.git
 $ cd Django_deployment_tool
 $ chmod +x ./deploy.sh
-$ ./deploy.sh usage
-$ ./deploy.sh deploy
-$ ./deploy.sh status
+$ ./deploy.sh usage  #command list
+$ ./deploy.sh create #create database
+$ ./deploy.sh deploy #deploy
+$ ./deploy.sh status #deploy status
 ```
