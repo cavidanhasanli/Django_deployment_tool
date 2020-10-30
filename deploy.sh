@@ -4,7 +4,7 @@ VERSION="1.0"
 ERROR_STATUS=0
 CONF_ROOT=/root/Django_deployment_tool
 POSTGRESQL_USER=postgres
-APP_SERVER=192.168.88.136
+#APP_SERVER=192.168.88.136
 # POSTGRESQL_CLUSTER_VERSION="$(sudo pg_lsclusters | egrep -o '[0-9]{1,}\.[0-9]{1,}' | (read a; echo $a;))" # $(pg_config --version | egrep -o '[0-9]{1,}\.[0-9]{1,}')
 POSTGRESQL_UPGRADE_TO=12.3
 
@@ -85,7 +85,8 @@ function get_user_credential {
         echo -e "\e[32mLinux User step ......................... [OK]\e[0m"
     else
         echo -e "Creating new User for $(uname -a)"
-        echo "APP_SERVER=${APP_SERVER}" >> "$CONF_ROOT/config.txt"
+        read  -p "Enter the IP address: " APP_SERVER
+        echo "APP_SERVER=$APP_SERVER" >> "$CONF_ROOT/config.txt"
         echo -e "Please write New Linux User name and password"
         read -p "Please enter your linux username: " APP_USER
         while true ; do
