@@ -17,3 +17,4 @@ $ ./deploy.sh create #create database
 $ ./deploy.sh deploy #deploy
 $ ./deploy.sh status #deploy status
 ```
+[![Deployment Tool Django](https://miro.medium.com/max/1075/1*rYdZRYct2FKHiGxlJIvORg.png)](https://www.youtube.com/watch?v=CmWkqDcNrfI "Django Deployment Tool")
